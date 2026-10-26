@@ -5,3 +5,4 @@ __pycache__/
 models/phishguard_model.pkl
 models/phishguard_url_model.pkl
 models/phishguard_v4_model.pkl
+dataset/PhiUSIIL_Phishing_URL_Dataset.csv
