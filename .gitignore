@@ -2,3 +2,6 @@ venv/
 __pycache__/
 .DS_Store
 *.pyc
+models/phishguard_model.pkl
+models/phishguard_url_model.pkl
+models/phishguard_v4_model.pkl
