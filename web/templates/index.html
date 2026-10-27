@@ -1,0 +1,1925 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>PhishGuard AI</title>
+
+    <style>
+
+        /* =========================================
+           GLOBAL
+           ========================================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --green: #24f27c;
+            --green-dark: #0dbd56;
+            --green-glow: rgba(36, 242, 124, 0.25);
+
+            --red: #ff315a;
+            --red-dark: #c5163c;
+            --red-glow: rgba(255, 49, 90, 0.25);
+
+            --bg: #020604;
+            --card: #07100b;
+            --card-light: #0a140e;
+            --border: #123c24;
+
+            --text: #f2f7f4;
+            --muted: #7d9386;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    rgba(20, 90, 48, 0.10),
+                    transparent 45%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            padding: 28px 18px;
+        }
+
+        /* =========================================
+           MAIN CONTAINER
+           ========================================= */
+
+        .container {
+            width: 100%;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .main-card {
+            background: rgba(4, 13, 8, 0.92);
+
+            border: 1px solid var(--border);
+
+            border-radius: 24px;
+
+            padding: 54px 46px;
+
+            box-shadow:
+                0 0 60px rgba(36, 242, 124, 0.06),
+                inset 0 0 40px rgba(36, 242, 124, 0.015);
+        }
+
+        /* =========================================
+           HEADER
+           ========================================= */
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+
+            margin: 0 auto 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid var(--border);
+
+            border-radius: 18px;
+
+            background: rgba(5, 15, 9, 0.9);
+
+            font-size: 30px;
+
+            box-shadow:
+                0 0 25px rgba(36, 242, 124, 0.12);
+        }
+
+        h1 {
+            font-size: 46px;
+            font-weight: 800;
+
+            color: var(--green);
+
+            letter-spacing: -1.5px;
+
+            text-shadow:
+                0 0 25px rgba(36, 242, 124, 0.25);
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #9caf9f;
+            font-size: 15px;
+            margin-bottom: 18px;
+        }
+
+        /* =========================================
+           ENGINE STATUS
+           ========================================= */
+
+        .engine-status {
+            display: inline-flex;
+
+            align-items: center;
+            gap: 9px;
+
+            padding: 9px 16px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 30px;
+
+            color: var(--green);
+
+            font-size: 13px;
+            font-weight: 600;
+
+            background: rgba(36, 242, 124, 0.03);
+
+            box-shadow:
+                0 0 18px rgba(36, 242, 124, 0.05);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 10px var(--green);
+
+            animation: statusPulse 1.8s infinite;
+        }
+
+        @keyframes statusPulse {
+
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.55;
+                transform: scale(0.75);
+            }
+
+        }
+
+        /* =========================================
+           SCAN FORM
+           ========================================= */
+
+        .scan-form {
+            display: flex;
+
+            gap: 12px;
+
+            width: 100%;
+
+            margin-bottom: 28px;
+        }
+
+        .url-input {
+            flex: 1;
+
+            min-width: 0;
+
+            height: 56px;
+
+            padding: 0 20px;
+
+            border-radius: 14px;
+
+            border: 1px solid #14572f;
+
+            background: #020604;
+
+            color: var(--text);
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition:
+                border 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .url-input::placeholder {
+            color: #607568;
+        }
+
+        .url-input:focus {
+            border-color: var(--green);
+
+            box-shadow:
+                0 0 0 3px rgba(36, 242, 124, 0.08),
+                0 0 20px rgba(36, 242, 124, 0.08);
+        }
+
+        .scan-button {
+            height: 56px;
+
+            padding: 0 30px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            background: var(--green);
+
+            color: #001a09;
+
+            font-size: 15px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                opacity 0.2s ease;
+        }
+
+        .scan-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 25px rgba(36, 242, 124, 0.18);
+        }
+
+        .scan-button:active {
+            transform: translateY(0);
+        }
+
+        .scan-button.scanning {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        /* =========================================
+           SCAN STATUS
+           ========================================= */
+
+        .scan-status {
+            display: none;
+
+            justify-content: center;
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: -12px;
+            margin-bottom: 25px;
+
+            color: var(--green);
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .loading-dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 12px var(--green);
+
+            animation: loadingPulse 1s infinite;
+        }
+
+        @keyframes loadingPulse {
+
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+
+        }
+
+        /* =========================================
+           SECURITY STATS
+           ========================================= */
+
+        .security-stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            min-height: 108px;
+
+            padding: 18px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            background: rgba(5, 15, 9, 0.8);
+
+            border: 1px solid #124a2b;
+
+            border-radius: 15px;
+
+            transition:
+                transform 0.2s ease,
+                border 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+
+            border-color: var(--green);
+        }
+
+        .stat-icon {
+            font-size: 22px;
+
+            margin-bottom: 8px;
+        }
+
+        .stat-title {
+            color: #718779;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: var(--green);
+
+            font-size: 14px;
+
+            font-weight: 800;
+        }
+
+        /* =========================================
+           RESULT CARD - BASE
+           ========================================= */
+
+        .result-card {
+            border-radius: 20px;
+
+            padding: 30px;
+
+            background: #020604;
+
+            margin-top: 10px;
+
+            transition:
+                border 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+        /* =========================================
+           LEGITIMATE RESULT
+           ========================================= */
+
+        .result-card.legitimate {
+            border: 1px solid var(--green-dark);
+
+            box-shadow:
+                0 0 30px rgba(36, 242, 124, 0.06);
+        }
+
+        .result-card.legitimate .result-title {
+            color: var(--green);
+        }
+
+        .result-card.legitimate .result-dot {
+            background: var(--green);
+
+            box-shadow:
+                0 0 18px var(--green);
+        }
+
+        .result-card.legitimate .confidence-fill {
+            background: var(--green);
+
+            box-shadow:
+                0 0 12px var(--green-glow);
+        }
+
+        .result-card.legitimate .analysis-title {
+            color: var(--green);
+        }
+
+        .result-card.legitimate .badge {
+            color: var(--green);
+
+            border-color: var(--green-dark);
+
+            background: rgba(36, 242, 124, 0.03);
+        }
+
+        /* =========================================
+           PHISHING RESULT
+           ========================================= */
+
+        .result-card.phishing {
+            border: 1px solid var(--red-dark);
+
+            box-shadow:
+                0 0 30px rgba(255, 49, 90, 0.08);
+        }
+
+        .result-card.phishing .result-title {
+            color: var(--red);
+        }
+
+        .result-card.phishing .result-dot {
+            background: var(--red);
+
+            box-shadow:
+                0 0 18px var(--red);
+        }
+
+        .result-card.phishing .confidence-fill {
+            background: var(--red);
+
+            box-shadow:
+                0 0 12px var(--red-glow);
+        }
+
+        .result-card.phishing .analysis-title {
+            color: var(--red);
+        }
+
+        .result-card.phishing .badge {
+            color: var(--red);
+
+            border-color: var(--red-dark);
+
+            background: rgba(255, 49, 90, 0.03);
+        }
+
+        /* =========================================
+           RESULT HEADER
+           ========================================= */
+
+        .result-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            margin-bottom: 28px;
+        }
+
+        .result-title-wrap {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .result-dot {
+            width: 24px;
+            height: 24px;
+
+            border-radius: 50%;
+
+            flex-shrink: 0;
+        }
+
+        .result-title {
+            font-size: 28px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.5px;
+        }
+
+        .badge {
+            padding: 8px 15px;
+
+            border: 1px solid;
+
+            border-radius: 30px;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.7px;
+
+            white-space: nowrap;
+        }
+
+        /* =========================================
+           INFORMATION GRID
+           ========================================= */
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 28px;
+        }
+
+        .info-box {
+            min-width: 0;
+
+            padding: 18px;
+
+            background: rgba(5, 15, 9, 0.7);
+
+            border: 1px solid #163a25;
+
+            border-radius: 14px;
+        }
+
+        .phishing .info-box {
+            border-color: #391522;
+        }
+
+        .info-label {
+            color: #718779;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.2px;
+
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            color: #dce7e0;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            line-height: 1.5;
+
+            word-break: break-word;
+        }
+
+        /* =========================================
+           CONFIDENCE
+           ========================================= */
+
+        .confidence-section {
+            margin-bottom: 28px;
+        }
+
+        .confidence-top {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 9px;
+        }
+
+        .confidence-label {
+            color: #9caf9f;
+
+            font-size: 13px;
+        }
+
+        .confidence-value {
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+        .legitimate .confidence-value {
+            color: var(--green);
+        }
+
+        .phishing .confidence-value {
+            color: var(--red);
+        }
+
+        .confidence-track {
+            width: 100%;
+
+            height: 8px;
+
+            overflow: hidden;
+
+            border-radius: 20px;
+
+            background: #142119;
+        }
+
+        .confidence-fill {
+            height: 100%;
+
+            border-radius: 20px;
+
+            transition: width 1s ease;
+        }
+
+        /* =========================================
+           TECHNICAL URL ANALYSIS
+           ========================================= */
+
+        .technical-analysis {
+            margin-bottom: 28px;
+            padding: 22px;
+            border: 1px solid #163a25;
+            border-radius: 16px;
+            background: rgba(5, 15, 9, 0.72);
+        }
+
+        .technical-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            color: #9caf9f;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .technical-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .technical-item {
+            min-width: 0;
+            padding: 13px 14px;
+            border: 1px solid #163a25;
+            border-radius: 12px;
+            background: rgba(2, 6, 4, 0.75);
+        }
+
+        .technical-label {
+            margin-bottom: 5px;
+            color: #63776a;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .technical-value {
+            color: #dce7e0;
+            font-size: 13px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .technical-value.good {
+            color: var(--green);
+        }
+
+        .technical-value.warning {
+            color: var(--red);
+        }
+
+        @media (max-width: 480px) {
+            .technical-analysis {
+                padding: 18px;
+            }
+
+            .technical-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =========================================
+           THREAT SCORE
+           ========================================= */
+
+        .threat-score-section {
+            margin-bottom: 28px;
+            padding: 22px;
+            border: 1px solid #163a25;
+            border-radius: 16px;
+            background: rgba(5, 15, 9, 0.72);
+        }
+
+        .threat-score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .threat-score-title {
+            color: #9caf9f;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .threat-score-value {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .legitimate .threat-score-value {
+            color: var(--green);
+        }
+
+        .phishing .threat-score-value {
+            color: var(--red);
+        }
+
+        .threat-score-track {
+            width: 100%;
+            height: 12px;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #142119;
+            border: 1px solid #1b3525;
+        }
+
+        .threat-score-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 20px;
+            transition: width 1s ease;
+        }
+
+        .legitimate .threat-score-fill {
+            background: var(--green);
+            box-shadow: 0 0 14px var(--green-glow);
+        }
+
+        .phishing .threat-score-fill {
+            background: var(--red);
+            box-shadow: 0 0 14px var(--red-glow);
+        }
+
+        .threat-score-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .threat-score-label {
+            color: #718779;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .legitimate .threat-score-label {
+            color: var(--green);
+        }
+
+        .phishing .threat-score-label {
+            color: var(--red);
+        }
+
+        @media (max-width: 480px) {
+            .threat-score-section {
+                padding: 18px;
+            }
+        }
+
+        /* =========================================
+           ANALYSIS
+           ========================================= */
+
+        .analysis {
+            padding-top: 24px;
+
+            border-top: 1px solid #163525;
+        }
+
+        .phishing .analysis {
+            border-top-color: #3c1824;
+        }
+
+        .analysis-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 17px;
+
+            font-weight: 800;
+
+            margin-bottom: 15px;
+        }
+
+        .analysis-list {
+            padding-left: 22px;
+
+            color: #b4c4ba;
+
+            font-size: 13px;
+
+            line-height: 1.9;
+        }
+
+        /* =========================================
+           SCAN HISTORY
+           ========================================= */
+
+        .history-section {
+            margin-top: 28px;
+            padding: 22px;
+            background: rgba(5, 15, 9, 0.72);
+            border: 1px solid #163a25;
+            border-radius: 18px;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 16px;
+        }
+
+        .history-title {
+            color: var(--text);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .history-subtitle {
+            color: #718779;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .clear-history {
+            padding: 8px 13px;
+            border: 1px solid #234a31;
+            border-radius: 9px;
+            background: transparent;
+            color: #8ca193;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .clear-history:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .scan-history {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 13px 15px;
+            border: 1px solid #163525;
+            border-radius: 12px;
+            background: rgba(2, 6, 4, 0.75);
+        }
+
+        .history-url {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #c9d8cf;
+            font-size: 13px;
+        }
+
+        .history-result {
+            flex-shrink: 0;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .history-result.safe {
+            color: var(--green);
+            border: 1px solid var(--green-dark);
+            background: rgba(36, 242, 124, 0.04);
+        }
+
+        .history-result.danger {
+            color: var(--red);
+            border: 1px solid var(--red-dark);
+            background: rgba(255, 49, 90, 0.04);
+        }
+
+        .history-empty {
+            padding: 18px;
+            text-align: center;
+            color: #63776a;
+            font-size: 12px;
+        }
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 30px;
+
+            color: #53685b;
+
+            font-size: 12px;
+        }
+
+        /* =========================================
+           ERROR MESSAGE
+           ========================================= */
+
+        .error-message {
+            margin-top: 10px;
+            margin-bottom: 28px;
+            padding: 18px 20px;
+            border: 1px solid var(--red-dark);
+            border-radius: 14px;
+            background: rgba(255, 49, 90, 0.05);
+            box-shadow: 0 0 25px rgba(255, 49, 90, 0.04);
+        }
+
+        .error-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 7px;
+            color: var(--red);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .error-text {
+            color: #c9aaaF;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .error-hint {
+            margin-top: 8px;
+            color: #8d756e;
+            font-size: 12px;
+        }
+
+        /* =========================================
+           EMPTY STATE
+           ========================================= */
+
+        .empty-state {
+            text-align: center;
+
+            padding: 28px;
+
+            color: #63776a;
+
+            font-size: 13px;
+        }
+
+        /* =========================================
+           MOBILE
+           ========================================= */
+
+        @media (max-width: 700px) {
+
+            body {
+                padding: 14px;
+            }
+
+            .main-card {
+                padding: 35px 20px;
+
+                border-radius: 18px;
+            }
+
+            h1 {
+                font-size: 34px;
+            }
+
+            .scan-form {
+                flex-direction: column;
+            }
+
+            .scan-button {
+                width: 100%;
+            }
+
+            .security-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-header {
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .result-title {
+                font-size: 23px;
+            }
+
+            .badge {
+                align-self: flex-start;
+            }
+
+        }
+        /* ==============================
+   RESPONSIVE DESIGN
+   ============================== */
+
+@media (max-width: 768px) {
+
+    body {
+        padding: 15px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .main-card {
+        padding: 25px 18px;
+    }
+
+    h1 {
+        font-size: 38px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    .scan-form {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .url-input {
+        width: 100%;
+    }
+
+    .scan-button {
+        width: 100%;
+    }
+
+    .security-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .result-card {
+        padding: 22px;
+    }
+
+    .result-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .result-header h2 {
+        font-size: 26px;
+    }
+
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* SMALL PHONES */
+
+@media (max-width: 480px) {
+
+    body {
+        padding: 8px;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    .main-card {
+        padding: 20px 12px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .engine-status {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    .url-input {
+        font-size: 14px;
+        padding: 14px;
+    }
+
+    .scan-button {
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .result-card {
+        padding: 18px;
+    }
+
+    .result-header h2 {
+        font-size: 23px;
+    }
+}
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="main-card">
+
+        <!-- =====================================
+             HEADER
+             ===================================== -->
+
+        <div class="brand-header">
+
+            <div class="logo">
+                🛡️
+            </div>
+
+            <h1>
+                PhishGuard AI
+            </h1>
+
+            <p class="subtitle">
+                AI-powered phishing URL detection
+            </p>
+
+            <div class="engine-status">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    PhishGuard V6 Security Engine Online
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             URL SCANNER
+             ===================================== -->
+
+        <form
+    class="scan-form"
+    method="POST"
+    action="/"
+    onsubmit="startScan()"
+>
+
+    <input
+        class="url-input"
+        type="text"
+        name="url"
+        placeholder="Enter a URL to scan..."
+        value="{{ result.url if result else '' }}"
+        required
+    >
+
+    <button
+        id="scanButton"
+        class="scan-button"
+        type="submit"
+    >
+        <span id="buttonText">Scan URL</span>
+    </button>
+
+</form>
+
+<div id="scanStatus" class="scan-status">
+    <span class="loading-dot"></span>
+    <span>Analyzing URL with PhishGuard V6...</span>
+</div>
+
+{% if error %}
+<div class="error-message">
+    <div class="error-title">
+        <span>⚠️</span>
+        <span>Scan Error</span>
+    </div>
+
+    <div class="error-text">
+        {{ error }}
+    </div>
+
+    <div class="error-hint">
+        Example: https://example.com
+    </div>
+</div>
+{% endif %}
+
+
+        <!-- =====================================
+             SECURITY STATS
+             ===================================== -->
+
+        <div class="security-stats">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🛡️
+                </div>
+
+                <div class="stat-title">
+                    V6 ENGINE
+                </div>
+
+                <div class="stat-value">
+                    ACTIVE
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🤖
+                </div>
+
+                <div class="stat-title">
+                    DETECTION
+                </div>
+
+                <div class="stat-value">
+                    HYBRID AI
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⚡
+                </div>
+
+                <div class="stat-title">
+                    ANALYSIS
+                </div>
+
+                <div class="stat-value">
+                    REAL-TIME
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             RECENT SCAN HISTORY
+             ===================================== -->
+
+        <div class="history-section">
+
+            <div class="history-header">
+
+                <div>
+                    <div class="history-title">🕘 Recent Scans</div>
+                    <div class="history-subtitle">URLs analyzed during this session</div>
+                </div>
+
+                <button
+                    type="button"
+                    class="clear-history"
+                    onclick="clearHistory()"
+                >
+                    Clear
+                </button>
+
+            </div>
+
+            <div id="scanHistory" class="scan-history">
+                <div class="history-empty">No scans yet</div>
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             RESULT
+             ===================================== -->
+
+        {% if result %}
+
+            {% set is_phishing = result.result|lower == 'phishing' %}
+
+            <div
+                class="result-card {{ 'phishing' if is_phishing else 'legitimate' }}"
+            >
+
+                <!-- RESULT HEADER -->
+
+                <div class="result-header">
+
+                    <div class="result-title-wrap">
+
+                        <span class="result-dot"></span>
+
+                        <h2 class="result-title">
+
+                            {% if is_phishing %}
+                                Phishing Detected
+                            {% else %}
+                                Legitimate URL
+                            {% endif %}
+
+                        </h2>
+
+                    </div>
+
+
+                    <div class="badge">
+
+                        {% if is_phishing %}
+                            THREAT DETECTED
+                        {% else %}
+                            VERIFIED SAFE
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- INFORMATION -->
+
+                <div class="info-grid">
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            SCANNED URL
+                        </div>
+
+                        <div class="info-value">
+                            {{ result.url if result else '' }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            REGISTERED DOMAIN
+                        </div>
+
+                        <div class="info-value">
+                            {{ result.registered_domain }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            DETECTION METHOD
+                        </div>
+
+                        <div class="info-value">
+                            {{ result.method }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <div class="info-label">
+                            SECURITY ENGINE
+                        </div>
+
+                        <div class="info-value">
+                            PhishGuard AI V6
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIDENCE -->
+
+                <div class="confidence-section">
+
+                    <div class="confidence-top">
+
+                        <span class="confidence-label">
+                            Detection Confidence
+                        </span>
+
+                        <span class="confidence-value">
+                            {{ "%.2f"|format(result.confidence) }}%
+                        </span>
+
+                    </div>
+
+
+                    <div class="confidence-track">
+
+                        <div
+                             class="confidence-fill"
+                                data-confidence="{{ result.confidence }}"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TECHNICAL URL ANALYSIS -->
+
+                <div class="technical-analysis">
+
+                    <div class="technical-title">
+                        <span>🧪</span>
+                        <span>Technical URL Analysis</span>
+                    </div>
+
+                    <div class="technical-grid">
+
+                        <div class="technical-item">
+                            <div class="technical-label">PROTOCOL</div>
+                            <div class="technical-value" id="techProtocol">Analyzing...</div>
+                        </div>
+
+                        <div class="technical-item">
+                            <div class="technical-label">HOSTNAME</div>
+                            <div class="technical-value" id="techHostname">Analyzing...</div>
+                        </div>
+
+                        <div class="technical-item">
+                            <div class="technical-label">SUBDOMAINS</div>
+                            <div class="technical-value" id="techSubdomains">Analyzing...</div>
+                        </div>
+
+                        <div class="technical-item">
+                            <div class="technical-label">URL LENGTH</div>
+                            <div class="technical-value" id="techLength">Analyzing...</div>
+                        </div>
+
+                        <div class="technical-item">
+                            <div class="technical-label">QUERY PARAMETERS</div>
+                            <div class="technical-value" id="techQuery">Analyzing...</div>
+                        </div>
+
+                        <div class="technical-item">
+                            <div class="technical-label">HTTPS</div>
+                            <div class="technical-value" id="techHttps">Analyzing...</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- THREAT SCORE -->
+
+                {% set threat_score = result.confidence if is_phishing else (100 - result.confidence) %}
+
+                <div class="threat-score-section">
+
+                    <div class="threat-score-header">
+
+                        <span class="threat-score-title">
+                            ⚠️ THREAT SCORE
+                        </span>
+
+                        <span class="threat-score-value">
+                            {{ "%.2f"|format(threat_score) }} / 100
+                        </span>
+
+                    </div>
+
+                    <div class="threat-score-track">
+
+                        <div
+                            class="threat-score-fill"
+                            data-threat-score="{{ threat_score }}"
+                        ></div>
+
+                    </div>
+
+                    <div class="threat-score-footer">
+
+                        <span class="threat-score-label">
+                            {% if is_phishing %}
+                                HIGH THREAT
+                            {% else %}
+                                LOW THREAT
+                            {% endif %}
+                        </span>
+
+                        <span class="threat-score-label">
+                            {% if is_phishing %}
+                                Phishing risk detected
+                            {% else %}
+                                URL appears safe
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ANALYSIS -->
+
+                <div class="analysis">
+
+                    <div class="analysis-title">
+
+                        <span>🔎</span>
+
+                        <span>
+                            Security Analysis
+                        </span>
+
+                    </div>
+
+
+                    <ul class="analysis-list">
+
+                        {% for item in result.analysis %}
+
+                            <li>
+                                {{ item }}
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                Enter a URL above and click
+                <strong>Scan URL</strong>
+                to analyze it.
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================
+             FOOTER
+             ===================================== -->
+
+        <div class="footer">
+
+            PhishGuard AI V6 • Hybrid Domain + Machine Learning Detection
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+     ========================================= -->
+
+<script>
+
+    const HISTORY_KEY = "phishguard_scan_history";
+
+    function loadHistory() {
+
+        const historyContainer = document.getElementById("scanHistory");
+
+        if (!historyContainer) return;
+
+        let history = [];
+
+        try {
+            history = JSON.parse(sessionStorage.getItem(HISTORY_KEY)) || [];
+        } catch (error) {
+            history = [];
+        }
+
+        if (history.length === 0) {
+            historyContainer.innerHTML =
+                '<div class="history-empty">No scans yet</div>';
+            return;
+        }
+
+        historyContainer.innerHTML = history.map(function (item) {
+
+            const isPhishing = item.result.toLowerCase() === "phishing";
+            const resultClass = isPhishing ? "danger" : "safe";
+            const resultText = isPhishing ? "PHISHING" : "LEGITIMATE";
+            const icon = isPhishing ? "🔴" : "🟢";
+
+            return `
+                <div class="history-item">
+                    <div class="history-url" title="${escapeHtml(item.url)}">
+                        ${icon} ${escapeHtml(item.url)}
+                    </div>
+                    <div class="history-result ${resultClass}">
+                        ${resultText}
+                    </div>
+                </div>
+            `;
+
+        }).join("");
+    }
+
+
+    function saveScan(url, result) {
+
+        if (!url || !result) return;
+
+        let history = [];
+
+        try {
+            history = JSON.parse(sessionStorage.getItem(HISTORY_KEY)) || [];
+        } catch (error) {
+            history = [];
+        }
+
+        history = history.filter(function (item) {
+            return !(item.url === url && item.result === result);
+        });
+
+        history.unshift({
+            url: url,
+            result: result,
+            time: Date.now()
+        });
+
+        history = history.slice(0, 10);
+
+        sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+        loadHistory();
+    }
+
+
+    function clearHistory() {
+        sessionStorage.removeItem(HISTORY_KEY);
+        loadHistory();
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.querySelector(".scan-form");
+        const button = document.getElementById("scanButton");
+        const buttonText = document.getElementById("buttonText");
+        const status = document.getElementById("scanStatus");
+        const input = document.querySelector(".url-input");
+
+        loadHistory();
+
+        // Animate confidence bar after the result is rendered.
+        document.querySelectorAll(".confidence-fill").forEach(function (fill) {
+            const confidence = Number(fill.dataset.confidence || 0);
+
+            requestAnimationFrame(function () {
+                fill.style.width = confidence + "%";
+            });
+        });
+
+        // Technical URL analysis for the current scan.
+        const technicalUrl = {{ result.url|tojson if result else '""' }};
+
+        function analyzeTechnicalUrl(url) {
+
+            if (!url) return;
+
+            let parsedUrl;
+
+            try {
+                parsedUrl = new URL(
+                    /^https?:\/\//i.test(url)
+                        ? url
+                        : "https://" + url
+                );
+            } catch (error) {
+                return;
+            }
+
+            const protocol = parsedUrl.protocol.replace(":", "").toUpperCase();
+            const hostname = parsedUrl.hostname || "Unknown";
+            const hostParts = hostname.split(".").filter(Boolean);
+
+            let subdomainCount = 0;
+
+            if (hostParts.length > 2) {
+                subdomainCount = hostParts.length - 2;
+            }
+
+            const queryCount = parsedUrl.searchParams.size;
+            const isHttps = parsedUrl.protocol.toLowerCase() === "https:";
+
+            const protocolElement = document.getElementById("techProtocol");
+            const hostnameElement = document.getElementById("techHostname");
+            const subdomainElement = document.getElementById("techSubdomains");
+            const lengthElement = document.getElementById("techLength");
+            const queryElement = document.getElementById("techQuery");
+            const httpsElement = document.getElementById("techHttps");
+
+            if (protocolElement) {
+                protocolElement.textContent = protocol;
+                protocolElement.className =
+                    "technical-value " + (isHttps ? "good" : "warning");
+            }
+
+            if (hostnameElement) {
+                hostnameElement.textContent = hostname;
+            }
+
+            if (subdomainElement) {
+                subdomainElement.textContent =
+                    subdomainCount + (subdomainCount === 1 ? " level" : " levels");
+
+                if (subdomainCount > 2) {
+                    subdomainElement.className = "technical-value warning";
+                }
+            }
+
+            if (lengthElement) {
+                lengthElement.textContent = url.length + " characters";
+
+                if (url.length > 100) {
+                    lengthElement.className = "technical-value warning";
+                }
+            }
+
+            if (queryElement) {
+                queryElement.textContent =
+                    queryCount + (queryCount === 1 ? " parameter" : " parameters");
+            }
+
+            if (httpsElement) {
+                httpsElement.textContent = isHttps ? "Enabled" : "Not enabled";
+                httpsElement.className =
+                    "technical-value " + (isHttps ? "good" : "warning");
+            }
+        }
+
+        analyzeTechnicalUrl(technicalUrl);
+
+        // Animate threat score after the result is rendered.
+        document.querySelectorAll(".threat-score-fill").forEach(function (fill) {
+            const score = Number(fill.dataset.threatScore || 0);
+
+            requestAnimationFrame(function () {
+                fill.style.width = Math.max(0, Math.min(score, 100)) + "%";
+            });
+        });
+
+        // Save the current Flask result into session history.
+        {% if result %}
+            saveScan(
+                {{ result.url|tojson }},
+                {{ result.result|tojson }}
+            );
+        {% endif %}
+
+        if (!form || !button) return;
+
+        form.addEventListener("submit", function (event) {
+
+            if (input && !input.value.trim()) {
+                event.preventDefault();
+                input.focus();
+                return;
+            }
+
+            button.disabled = true;
+            button.classList.add("scanning");
+
+            if (buttonText) {
+                buttonText.textContent = "SCANNING...";
+            } else {
+                button.textContent = "🔍 Scanning...";
+            }
+
+            if (status) {
+                status.style.display = "flex";
+            }
+        });
+
+    });
+
+</script>
+
+</body>
+</html>
