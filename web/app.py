@@ -100,7 +100,8 @@ def home():
             try:
 
                 result = predict_url(url)
-
+                print("FLASK RESULT:", repr(result))
+                print("FLASK RESULT TYPE:", type(result))     
                 if not result:
                     error = "The scanner did not return a result. Please try again."
 
